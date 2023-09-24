@@ -71,6 +71,8 @@ my_document = [
     "El diseño de interfaces de usuario es crucial para la experiencia del usuario",
     "La seguridad en el desarrollo es un proceso constante de mitigación de riesgos"
 ]
+
+
 def contar_palabras(documentos):
     palabras = []
     for documento in documentos:
@@ -78,19 +80,40 @@ def contar_palabras(documentos):
     contador_palabras = Counter(palabras)
     return contador_palabras.most_common()
 
+
 # Uso del algoritmo
 resultados = contar_palabras(my_document)
 for palabra, frecuencia in resultados:
     print(f"{palabra}: {frecuencia}")
 
-def buscar_documento_por_palabra(documentos, palabra):
-    documents_conteniendo_palabra = []
-    for i, documento in enumerate(documentos):
-        if palabra.lower() in documento.lower():
-            documents_conteniendo_palabra.append(i)
-    return documents_conteniendo_palabra
+
+def construir_indice_invertido(documentos):
+    indice_invertido = {}
+
+    for idx, documento in enumerate(documentos):
+        palabras = set(documento.split())
+
+        for palabra in palabras:
+            if palabra not in indice_invertido:
+                indice_invertido[palabra] = []
+            indice_invertido[palabra].append(idx)
+
+    return indice_invertido
 
 
-palabra_buscada = input("Por favor ingrese la palabra a buscar")
-documents_con_palabra = buscar_documento_por_palabra(my_document, palabra_buscada)
-print(f"Documentos que tienen la palabra '{palabra_buscada}': {documents_con_palabra}")
+def buscar_documento_por_palabra(indice, palabra):
+    if palabra in indice:
+        return indice[palabra]
+    else:
+        return []
+
+    indice_invertido = construir_indice_invertido(my_document)
+
+    # Pedir al usuario que ingrese la palabra a buscar
+    palabra_buscada = input("Por favor ingrese la palabra a buscar: ")
+
+    # Buscar documentos que contienen la palabra
+    documents_con_palabra = buscar_documento_por_palabra(indice_invertido, palabra_buscada)
+
+    # Imprimir resultados
+    print(f"Documentos que tienen la palabra '{palabra_buscada}': {documents_con_palabra}")
