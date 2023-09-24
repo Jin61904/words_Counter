@@ -91,15 +91,14 @@ def construir_indice_invertido(documentos):
     indice_invertido = {}
 
     for idx, documento in enumerate(documentos):
-        palabras = set(documento.split())
+        palabras = set(documento.lower().split())
 
         for palabra in palabras:
             if palabra not in indice_invertido:
                 indice_invertido[palabra] = []
-            indice_invertido[palabra].append(idx)
+            indice_invertido[palabra].append((idx, documento))
 
     return indice_invertido
-
 
 def buscar_documento_por_palabra(indice, palabra):
     if palabra in indice:
@@ -107,13 +106,15 @@ def buscar_documento_por_palabra(indice, palabra):
     else:
         return []
 
-    indice_invertido = construir_indice_invertido(my_document)
+# Construir el índice invertido
+indice_invertido = construir_indice_invertido(my_document)
 
-    # Pedir al usuario que ingrese la palabra a buscar
-    palabra_buscada = input("Por favor ingrese la palabra a buscar: ")
+# Pedir al usuario que ingrese la palabra a buscar
+palabra_buscada = input("Por favor ingrese la palabra a buscar: ")
 
-    # Buscar documentos que contienen la palabra
-    documents_con_palabra = buscar_documento_por_palabra(indice_invertido, palabra_buscada)
+# Buscar documentos que contienen la palabra
+resultados = buscar_documento_por_palabra(indice_invertido, palabra_buscada)
 
-    # Imprimir resultados
-    print(f"Documentos que tienen la palabra '{palabra_buscada}': {documents_con_palabra}")
+# Imprimir resultados
+for idx, fragmento in resultados:
+    print(f"Documento '{idx}': '{fragmento}'")
